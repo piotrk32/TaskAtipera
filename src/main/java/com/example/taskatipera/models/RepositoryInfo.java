@@ -10,7 +10,7 @@ import java.util.List;
 public class RepositoryInfo {
 
     private String name;
-    private Owner  owner;
+    private Owner owner;
     private List<Branch> branches;
     boolean fork;
 }
