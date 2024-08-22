@@ -71,11 +71,10 @@ public class GitHubServiceTest {
 
     @Test
     public void testGetUserRepositories_UserNotFound() {
-        // Arrange
+
         when(restTemplate.getForObject(anyString(), eq(RepositoryInfo[].class)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
-        // Act & Assert
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
             gitHubService.getUserRepositories("invalidUser");
         });
