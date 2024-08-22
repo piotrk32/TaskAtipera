@@ -25,14 +25,15 @@ import java.util.List;
 public class GitHubService {
 
     private static final Logger logger = LoggerFactory.getLogger(GitHubService.class);
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
     private static final String GITHUB_API_URL = "https://api.github.com";
 
     @Value("${github.api.token}")
     private String gitHubToken;
 
-    public GitHubService() {
-        restTemplate.getInterceptors().add(new BearerTokenInterceptor());
+    public GitHubService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+        this.restTemplate.getInterceptors().add(new BearerTokenInterceptor());
     }
 
     public List<RepositoryInfo> getUserRepositories(String username) {
@@ -48,6 +49,9 @@ public class GitHubService {
             } else if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
                 logger.error("GitHub API rate limit exceeded.");
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "GitHub API rate limit exceeded. Please try again later.");
+            } else if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) { // Add this block
+                logger.error("Invalid credentials provided.");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials.");
             } else {
                 logger.error("Error occurred while fetching repositories for user: {}", username, e);
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while fetching repositories");
@@ -65,7 +69,7 @@ public class GitHubService {
         return filteredRepos;
     }
 
-    private List<Branch> getBranches(String owner, String repoName) {
+    protected List<Branch> getBranches(String owner, String repoName) {
         String url = GITHUB_API_URL + "/repos/" + owner + "/" + repoName + "/branches";
         Branch[] branches = restTemplate.getForObject(url, Branch[].class);
 
