@@ -24,25 +24,25 @@ This Spring Boot application provides an API to retrieve non-forked repositories
 
 3. Generate a GitHub Personal Access Token (PAT):
 
-To avoid hitting rate limits when accessing the GitHub API, you need to generate a personal access token (PAT) to authenticate your requests.
-
-Log in to GitHub:
-
-Go to GitHub and log in to your account.
-Go to Developer Settings:
-
-In the top right corner of GitHub, click your profile picture, then click Settings.
-Scroll down to Developer settings.
-Generate a New Token:
-
-Click on Personal access tokens and then Tokens (classic).
-Click Generate new token.
-Give your token a descriptive name, like "GitHub API Consumer Token".
-Under Scopes, select the appropriate permissions. For basic API requests, you can select repo and read:org.
-Generate and Copy the Token:
-
-Click Generate token.
-Important: Copy the token immediately as you won't be able to see it again.
+   To avoid hitting rate limits when accessing the GitHub API, you need to generate a personal access token (PAT) to authenticate your requests.
+   
+   Log in to GitHub:
+   
+   Go to GitHub and log in to your account.
+   Go to Developer Settings:
+   
+   In the top right corner of GitHub, click your profile picture, then click Settings.
+   Scroll down to Developer settings.
+   Generate a New Token:
+   
+   Click on Personal access tokens and then Tokens (classic).
+   Click Generate new token.
+   Give your token a descriptive name, like "GitHub API Consumer Token".
+   Under Scopes, select the appropriate permissions. For basic API requests, you can select repo and read:org.
+   Generate and Copy the Token:
+   
+   Click Generate token.
+   Important: Copy the token immediately as you won't be able to see it again.
 
 4. Set the Personal Access Token in application.properties:
    ```
@@ -59,7 +59,7 @@ Important: Copy the token immediately as you won't be able to see it again.
 
 ### Get User Repositories
 
-You can endpoint using swagger : http://localhost:8080/swagger-ui/index.html
+You can test endpoint using swagger : http://localhost:8080/swagger-ui/index.html
 
 **Endpoint**: `/api/repos/{username}`  
 **Method**: GET  
