@@ -35,6 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+<<<<<<< HEAD
 
 ### Properties ###
 src/main/resources/application.properties
+=======
+>>>>>>> new-origin/master

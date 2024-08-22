@@ -7,7 +7,10 @@ This Spring Boot application provides an API to retrieve non-forked repositories
 - Java 21
 - Maven or Gradle
 - Internet connection (for accessing the GitHub API)
+<<<<<<< HEAD
 - A GitHub account for generating a personal access token (PAT)
+=======
+>>>>>>> new-origin/master
 
 ## Setup
 
@@ -22,6 +25,7 @@ This Spring Boot application provides an API to retrieve non-forked repositories
     ./gradlew build
     ```
 
+<<<<<<< HEAD
 3. Generate a GitHub Personal Access Token (PAT):
 
 To avoid hitting rate limits when accessing the GitHub API, you need to generate a personal access token (PAT) to authenticate your requests.
@@ -50,6 +54,8 @@ Important: Copy the token immediately as you won't be able to see it again.
 
    ```
 
+=======
+>>>>>>> new-origin/master
 3. Run the application:
     ```
     ./gradlew bootRun
