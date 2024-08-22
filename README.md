@@ -59,6 +59,8 @@ Important: Copy the token immediately as you won't be able to see it again.
 
 ### Get User Repositories
 
+You can endpoint using swagger : http://localhost:8080/swagger-ui/index.html
+
 **Endpoint**: `/api/repos/{username}`  
 **Method**: GET  
 **Headers**: `Accept: application/json`  
@@ -79,4 +81,6 @@ Important: Copy the token immediately as you won't be able to see it again.
             }
         ]
     }
+    
+    
 ]
