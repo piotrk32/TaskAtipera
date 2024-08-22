@@ -5,12 +5,19 @@ import com.example.taskatipera.models.Commit;
 import com.example.taskatipera.models.RepositoryInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +27,13 @@ public class GitHubService {
     private static final Logger logger = LoggerFactory.getLogger(GitHubService.class);
     private final RestTemplate restTemplate = new RestTemplate();
     private static final String GITHUB_API_URL = "https://api.github.com";
+
+    @Value("${github.api.token}")
+    private String gitHubToken;
+
+    public GitHubService() {
+        restTemplate.getInterceptors().add(new BearerTokenInterceptor());
+    }
 
     public List<RepositoryInfo> getUserRepositories(String username) {
         String url = GITHUB_API_URL + "/users/" + username + "/repos";
@@ -31,6 +45,9 @@ public class GitHubService {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 logger.warn("User not found: {}", username);
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            } else if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
+                logger.error("GitHub API rate limit exceeded.");
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "GitHub API rate limit exceeded. Please try again later.");
             } else {
                 logger.error("Error occurred while fetching repositories for user: {}", username, e);
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while fetching repositories");
@@ -59,13 +76,19 @@ public class GitHubService {
 
         List<Branch> branchList = new ArrayList<>();
         for (Branch branch : branches) {
-            Commit commit = branch.getCommit();
-            if (commit != null) {
+            if (branch.getCommit() != null) {
                 branchList.add(branch);
-            } else {
-                logger.warn("Branch {} in repository {} has no commit", branch.getName(), repoName);
             }
         }
         return branchList;
+    }
+
+    private class BearerTokenInterceptor implements ClientHttpRequestInterceptor {
+        @Override
+        public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+            HttpHeaders headers = request.getHeaders();
+            headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + gitHubToken);
+            return execution.execute(request, body);
+        }
     }
 }
